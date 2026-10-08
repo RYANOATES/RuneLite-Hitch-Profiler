@@ -41,9 +41,17 @@ The profiler measures time between RuneLite frame callbacks. That is useful for 
 
 The profiler keeps a bounded in-memory event history and appends session records to JSON Lines (JSONL). It refreshes a dark, brass-trimmed HTML report as you play and when the plugin closes. The report includes a severe-location table; clicking a timestamp opens the pinned OSRS map for that event. Map tiles load only when the map is opened.
 
+## HTML report guide
+
+The report turns the local JSONL journal into a searchable field journal. This annotated guide uses the actual report screenshot and points out the journal totals, severe-event map links, evidence explanations, filters, and session ledger.
+
+![Annotated guide to the RuneLite Hitch Profiler HTML report](readme-assets/html-report-guide.png)
+
+The totals summarize the full journal. The severe-location table is limited to severe hitches with a captured location; clicking a timestamp opens the map at that event's tile. **Explain** gives a cautious plain-language interpretation and lets you expand the captured evidence. The ledger can be searched and filtered by event type or session, and severe duration cells are red.
+
 ## Local data and privacy
 
-Session records and reports stay on your computer. The plugin does not upload them. The map viewer requests map tiles from its tile provider only when you open a location.
+Session records and reports stay on your computer; the plugin does not upload them. Opening a map uses external map code and requests map tiles for the selected area, so the map providers receive those requests. The report and hitch journal remain local.
 
 Files are stored in RuneLite's plugin data directory:
 
