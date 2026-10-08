@@ -52,18 +52,6 @@ Files are stored in RuneLite's plugin data directory:
 
 The folder is `~/.runelite/plugin-data/sailing-load-profiler/` (on Windows, `%USERPROFILE%\.runelite\plugin-data\sailing-load-profiler\`). These legacy names are retained so your existing settings and recordings remain available after the project was renamed.
 
-## Development
-
-For local development, clone or open this project folder and run:
-
-```powershell
-.\gradlew.bat run
-```
-
-This starts a RuneLite development client with the plugin loaded. Close other development clients first. To run the existing project checks, use `.gradlew.bat test`.
-
-The plugin source is in `src/main/java/runelitehitchprofiler/`. The report template is in `src/main/resources/runelitehitchprofiler/report-header.html`; `report-preview.html` is a design preview with sample data. The separate `RuneLite Hitch Profiler + 117 HD Patch` workspace is an optional local experiment and is not needed to use this plugin.
-
 ## License
 
 See [LICENSE](LICENSE).
