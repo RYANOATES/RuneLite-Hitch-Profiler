@@ -25,7 +25,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 
-@PluginDescriptor(internalName="sailing-load-profiler", name="RuneLite Hitch Profiler",
+@PluginDescriptor(internalName="runelite-hitch-profiler", legacyDataDirectory="sailing-load-profiler",
+ name="RuneLite Hitch Profiler",
  description="Records frame hitches and nearby map loading signals with local session reports.",
  tags={"performance","hitch","frame","loading","stutter","lag"})
 public class RuneLiteHitchProfilerPlugin extends Plugin
