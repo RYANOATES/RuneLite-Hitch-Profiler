@@ -20,6 +20,7 @@ final class RuneLiteHitchProfilerPanel extends PluginPanel
     private final JLabel status = new JLabel("Starting...");
     private final JTextArea summary = area(), detail = area(), compare = area(), saved = area(), logStatus = area();
     private final JButton pause = new JButton("Pause");
+    private final JButton explain = new JButton("?");
     private final JComboBox<String> filter = new JComboBox<>(new String[]{"All events","Hitches","Severe hitches","Map loads","Boat likely","Notes"});
     private final DefaultTableModel model = new DefaultTableModel(new String[]{"Time","Event","ms"},0) {
         @Override public boolean isCellEditable(int row,int col) { return false; }
@@ -28,6 +29,8 @@ final class RuneLiteHitchProfilerPanel extends PluginPanel
     private final List<String[]> visible = new ArrayList<>();
     private List<String[]> rows = new ArrayList<>();
     private String report = "";
+    private String[] selectedEvent;
+    private boolean showingExplanation;
     private final Graph graph = new Graph();
     private final JLabel hitchCount=new JLabel("0"), severeCount=new JLabel("0"), peakValue=new JLabel("0 ms"), loadCount=new JLabel("0");
 
@@ -80,7 +83,13 @@ final class RuneLiteHitchProfilerPanel extends PluginPanel
         });
         table.getSelectionModel().addListSelectionListener(e -> {
             int i=table.getSelectedRow();
-            if(i>=0 && i<visible.size()) { String[] r=visible.get(i); detail.setText(r[0]+" | "+r[3].replace('_',' ')+"\n"+r[4]); }
+            if(i>=0 && i<visible.size())
+            {
+                selectedEvent=visible.get(i);
+                showingExplanation=false;
+                explain.setEnabled("severe".equals(selectedEvent[5]));
+                showSelectedEvent();
+            }
         });
         JScrollPane scroll=scrolling(table,EVENT_MIN_HEIGHT);
         scroll.setName("eventHistory");
@@ -89,7 +98,16 @@ final class RuneLiteHitchProfilerPanel extends PluginPanel
         detail.setText("Select an event for context. Boat status is an estimate from camera focus.");
         JPanel historyFooter=new JPanel(new BorderLayout(0,4));
         historyFooter.add(resizeHandle(scroll),BorderLayout.NORTH);
-        historyFooter.add(scrolling(detail,65),BorderLayout.CENTER);
+        JPanel eventDetail=new JPanel(new BorderLayout(0,2));
+        JPanel detailHeader=new JPanel(new BorderLayout());
+        detailHeader.add(new JLabel("Event details"),BorderLayout.WEST);
+        explain.setEnabled(false); explain.setToolTipText("Select a severe hitch to see an explanation.");
+        explain.setMargin(new Insets(1,7,1,7));
+        explain.addActionListener(e -> { showingExplanation=!showingExplanation; showSelectedEvent(); });
+        detailHeader.add(explain,BorderLayout.EAST);
+        eventDetail.add(detailHeader,BorderLayout.NORTH);
+        eventDetail.add(scrolling(detail,65),BorderLayout.CENTER);
+        historyFooter.add(eventDetail,BorderLayout.CENTER);
         history.add(historyFooter,BorderLayout.SOUTH); live.add(history,BorderLayout.CENTER);
         tabs.addTab("Live",live); tabs.addTab("Compare",scrolling(compare,440)); tabs.addTab("Saved",scrolling(saved,440));
         add(tabs,BorderLayout.CENTER);
@@ -214,6 +232,23 @@ final class RuneLiteHitchProfilerPanel extends PluginPanel
     private static void setTextIfChanged(JTextArea area, String text)
     {
         if (!area.getText().equals(text)) area.setText(text);
+    }
+    private void showSelectedEvent()
+    {
+        if(selectedEvent==null) return;
+        String prefix=selectedEvent[0]+" | "+selectedEvent[3].replace('_',' ')+"\n";
+        if(showingExplanation)
+        {
+            detail.setText(prefix+HitchExplanation.explain(selectedEvent[4]).asText());
+            explain.setText("?");
+            explain.setToolTipText("Showing the explanation. Click to return to captured evidence.");
+        }
+        else
+        {
+            detail.setText(prefix+selectedEvent[4]);
+            explain.setText("?");
+            explain.setToolTipText("Click for a cautious plain-language explanation of the sampled evidence.");
+        }
     }
     void savedHistory(String text) { if(!saved.getText().equals(text)) saved.setText(text); }
     void update(String state,String report,String previous,List<String[]> rows,String logging,boolean paused)

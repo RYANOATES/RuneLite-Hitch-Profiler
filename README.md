@@ -23,7 +23,7 @@ The annotated panel below explains the live metrics, hitch graph, event history,
 
 ## Use the profiler
 
-The **Live** tab shows the current session summary, hitch graph, event history, and filters. Select an event to read its context. Use **Pause** to stop recording temporarily, or **New session** to start a fresh run while keeping the previous session available for comparison. Add short notes for route, renderer, and settings so the conditions are recorded with the run.
+The **Live** tab shows the current session summary, hitch graph, event history, and filters. Select an event to read its context. For a severe hitch, click **?** to switch between a plain-language interpretation and the captured evidence. Use **Pause** to stop recording temporarily, or **New session** to start a fresh run while keeping the previous session available for comparison. Add short notes for route, renderer, and settings so the conditions are recorded with the run.
 
 The **Compare** tab places the current and previous session summaries together. The **Saved** tab lists earlier events from disk. Use **Copy report** to copy the current session summary and logging status. Open the HTML report from the local data folder described below.
 
@@ -54,7 +54,7 @@ The folder is `~/.runelite/plugin-data/sailing-load-profiler/` (on Windows, `%US
 
 ## Roadmap
 
-These are proposed improvements, in suggested build order. They are not available yet. The aim is to explain more hitches, make comparisons trustworthy, and keep recording inexpensive enough to leave enabled.
+The severe-hitch translator is available in the side panel and HTML report. It groups common signatures, dynamically names plugin classes present in sampled stacks, and keeps raw evidence available. Its descriptions are cautious observations, not confirmed causes. Future improvements below focus on combining clues across a hitch window, grouping similar events across sessions, and adding supporting measurements.
 
 ### First: better evidence for each hitch
 
@@ -75,7 +75,7 @@ These are proposed improvements, in suggested build order. They are not availabl
 | --- | --- |
 | **Repeatable comparison runs** | Name a route or activity, mark its start and finish, and compare several runs under each configuration. Show active duration, sample counts, thresholds, settings differences, and per-run variation. Keep login, warm-up, loading, and unfocused periods identifiable rather than silently mixing them into gameplay results. |
 | **Recurring hitch groups** | Group similar stack signatures and event patterns across sessions. Summarize frequency, typical duration, worst duration, and links to examples. Describe a renderer or plugin as appearing in samples; reserve causal claims for stronger evidence. |
-| **Explanations with supporting evidence** | Give each severe hitch a short explanation such as "load signal nearby" or "GC activity in the sampling window", followed by the timestamps and samples supporting it. Allow multiple clues, show missing evidence, and retain "unknown" instead of forcing every event into a cause category. |
+| **Richer evidence timelines** | Combine multiple time-bounded clues around each hitch, show their timestamps and confidence limits, and preserve missing or ambiguous evidence instead of forcing a cause category. |
 | **Location hotspot map** | Extend the existing severe-event pins into clusters with counts and duration summaries. Keep instance/plane context and explain that raw counts favor places visited more often. Only present hitches per minute at a location if suitable time-spent data is also collected, with a privacy option for location recording. |
 | **Scene activity context** | Add bounded summaries of NPC/object churn and available scene counts around hitches. Reuse events or inexpensive snapshots where possible. Avoid full scene scans every frame, and distinguish scene activity from measured rendering cost. |
 
