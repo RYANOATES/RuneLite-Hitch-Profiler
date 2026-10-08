@@ -1,9 +1,5 @@
 ![](readme-assets/profiler-header.svg)
 
-# RuneLite Hitch Profiler
-
-<p align="center"><strong>Find the pauses between frames. Keep the evidence. Compare the run.</strong></p>
-
 RuneLite Hitch Profiler records frame-time gaps and nearby client activity in a readable side panel and a local HTML report. Use it while travelling, questing, bossing, or comparing graphics settings. It does not change RuneLite's renderer or game settings.
 
 ## Side panel guide
