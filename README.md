@@ -52,6 +52,51 @@ Files are stored in RuneLite's plugin data directory:
 
 The folder is `~/.runelite/plugin-data/sailing-load-profiler/` (on Windows, `%USERPROFILE%\.runelite\plugin-data\sailing-load-profiler\`). These legacy names are retained so your existing settings and recordings remain available after the project was renamed.
 
+## Roadmap
+
+These are proposed improvements, in suggested build order. They are not available yet. The aim is to explain more hitches, make comparisons trustworthy, and keep recording inexpensive enough to leave enabled.
+
+### First: better evidence for each hitch
+
+| Priority | Improvement | What it would tell you |
+| --- | --- | --- |
+| 1 | **Profiler overhead and capture health** | Record sampling delays, dropped events, log queue depth, and report-generation time. Benchmark recording with diagnostics off and on, including long sessions, so we know how much work the profiler itself adds. |
+| 2 | **Renderer and settings timeline** | Record GPU/117 HD enable and disable events and selected performance settings, where supported. Split comparisons when settings change, so a session containing several renderer configurations is not treated as one result. Use an explicit list of safe settings, not a dump of every plugin's configuration. |
+| 3 | **Garbage collection and memory context** | Add low-frequency heap usage, collection-count changes, and collection-time changes around hitches. Show the measurement window: a collection in the same window is a clue, and aggregate collection time is not an exact stop-the-world pause duration. |
+| 4 | **Client-thread CPU time versus elapsed time** | Where supported and affordable, compare CPU-time changes with frame-gap duration. This could distinguish CPU-heavy work from an interval containing substantial waiting. Waiting would remain unclassified unless other evidence supports an explanation; it does not by itself prove GPU or buffer trouble. |
+| 5 | **A before-and-after hitch timeline** | Keep a bounded rolling buffer of frame timing and nearby events, then retain a short window around severe hitches. Show what happened before, during, and after the gap: loading, entity changes, focus changes, settings changes, and captured stacks. Merge overlapping windows and avoid writing every frame to disk. |
+| 6 | **More useful frame statistics** | Add p99 frame time, counts above fixed durations such as 50/100/250/500 ms, severe hitches per active minute, and total time beyond the chosen frame-time budget. Use all captured frame intervals for percentiles; keep hitch-only averages separate. Handle gaps above two seconds without silently treating them as exactly two seconds. |
+
+**Suggested next milestone:** capture health, renderer/settings changes, and memory/GC context. These directly address the uncertainty we encountered when comparing sailing with different renderers. Evaluate CPU-time collection separately before enabling it by default.
+
+### Next: turn recordings into useful comparisons
+
+| Improvement | Planned behavior |
+| --- | --- |
+| **Repeatable comparison runs** | Name a route or activity, mark its start and finish, and compare several runs under each configuration. Show active duration, sample counts, thresholds, settings differences, and per-run variation. Keep login, warm-up, loading, and unfocused periods identifiable rather than silently mixing them into gameplay results. |
+| **Recurring hitch groups** | Group similar stack signatures and event patterns across sessions. Summarize frequency, typical duration, worst duration, and links to examples. Describe a renderer or plugin as appearing in samples; reserve causal claims for stronger evidence. |
+| **Explanations with supporting evidence** | Give each severe hitch a short explanation such as "load signal nearby" or "GC activity in the sampling window", followed by the timestamps and samples supporting it. Allow multiple clues, show missing evidence, and retain "unknown" instead of forcing every event into a cause category. |
+| **Location hotspot map** | Extend the existing severe-event pins into clusters with counts and duration summaries. Keep instance/plane context and explain that raw counts favor places visited more often. Only present hitches per minute at a location if suitable time-spent data is also collected, with a privacy option for location recording. |
+| **Scene activity context** | Add bounded summaries of NPC/object churn and available scene counts around hitches. Reuse events or inexpensive snapshots where possible. Avoid full scene scans every frame, and distinguish scene activity from measured rendering cost. |
+
+### Then: make long sessions and sharing easier
+
+- **Session library and report filters:** browse saved runs by date, activity, duration, renderer, and severity; search notes and stacks; open a report from the panel. Load older records in batches and keep the visible table bounded.
+- **Log rotation and retention controls:** replace the current 100 MB recording stop with controlled rotation, archive discovery, and a clear disk-use display. Preserve old sessions by default; make any automatic deletion an explicit user choice. Version the data format and keep older recordings readable.
+- **Shareable diagnostic bundles:** export selected events, a small report, and relevant environment details. Preview the bundle and remove account names, personal paths, sensitive notes, and optional world locations before sharing. Keep export user-triggered.
+- **Capture presets and a manual marker:** offer lightweight everyday capture and a time-limited detailed mode, plus a hotkey to mark a noticeable stutter. Make the capture level visible and cap extra sampling work.
+
+### Measurement rules for future work
+
+- Keep the existing dark journal theme and readable sidebar. Put detail behind event selection rather than crowding the summary.
+- Bound memory, sampling, disk queues, and report size. Measure each new feature's overhead before making it part of normal capture.
+- Use supported RuneLite APIs and JVM measurements, with an unavailable state when a measurement cannot be collected. Feature feasibility and Plugin Hub review still need checking before implementation.
+- Keep timestamped observations separate from explanations. Stack samples, nearby events, and JVM counters can narrow down a hitch without proving a single cause.
+- Treat direct GPU execution time, VRAM pressure, driver stalls, and exact buffer-map duration as future integration work requiring suitable renderer instrumentation. Do not infer those measurements from frame gaps alone.
+- Verify both logging correctness and gameplay behavior: restart/re-enable, changed thresholds, focus changes, loading, long captures, and renderer comparisons.
+
+Technical references: [Java monitoring and management](https://docs.oracle.com/en/java/javase/11/management/java-se-monitoring-and-management-guide.pdf) and [RuneLite Plugin Hub review scope](https://github.com/runelite/runelite/wiki/Plugin-Hub-Review).
+
 ## License
 
 See [LICENSE](LICENSE).
