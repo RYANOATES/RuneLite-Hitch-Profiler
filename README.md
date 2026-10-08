@@ -35,19 +35,23 @@ The **Compare** tab places the current and previous session summaries together. 
 
 Threshold changes apply to the next session. Severe events can include bounded client-thread stack samples, nearby event counts, map-loading clues, and a world location when RuneLite provides one. Location is captured only for severe hitches. Boat position is inferred from the camera focus entity; on land it uses the local player's tile.
 
+## HTML report guide
+
+The report turns the local JSONL journal into a searchable field journal. The themed guide below uses an actual report screenshot with callouts for its main features. Click the graphic to view it at full size.
+
+[![RuneLite Hitch Profiler report showing journal totals, severe hitch locations, an expanded explanation, and the session ledger](readme-assets/html-report-guide.png)](readme-assets/html-report-guide.png)
+
+- **Journal totals:** recorded hitches, severe hitches, longest gap, and session count summarize the whole journal.
+- **Severe hitch locations:** events with a captured location have clickable timestamps that open the OSRS map at their recorded tile.
+- **Explain:** read a plain-language interpretation, then expand **Show captured evidence** for the underlying clues. These observations do not prove a cause.
+- **Search and filters:** find notes, events, or timestamps; select an event type or session; show technical columns or refresh the log.
+- **Session ledger:** browse events newest first. Red duration cells mark severe hitches using each session's configured threshold.
+
 ## What the measurements mean
 
 The profiler measures time between RuneLite frame callbacks. That is useful for finding stalls, but it is not a direct measurement of GPU execution or monitor presentation. Stack samples and nearby events are clues that can help narrow down a hitch; they do not prove a single cause.
 
 The profiler keeps a bounded in-memory event history and appends session records to JSON Lines (JSONL). It refreshes a dark, brass-trimmed HTML report as you play and when the plugin closes. The report includes a severe-location table; clicking a timestamp opens the pinned OSRS map for that event. Map tiles load only when the map is opened.
-
-## HTML report guide
-
-The report turns the local JSONL journal into a searchable field journal. This annotated guide uses the actual report screenshot and points out the journal totals, severe-event map links, evidence explanations, filters, and session ledger.
-
-![Annotated guide to the RuneLite Hitch Profiler HTML report](readme-assets/html-report-guide.png)
-
-The totals summarize the full journal. The severe-location table is limited to severe hitches with a captured location; clicking a timestamp opens the map at that event's tile. **Explain** gives a cautious plain-language interpretation and lets you expand the captured evidence. The ledger can be searched and filtered by event type or session, and severe duration cells are red.
 
 ## Local data and privacy
 
