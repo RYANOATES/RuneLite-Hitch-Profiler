@@ -1,0 +1,11 @@
+.gradle
+build
+build-hitch-finder/
+.gradle-hitch-build/
+.idea/
+.project
+.settings/
+.classpath
+nbactions.xml
+nb-configuration.xml
+nbproject/

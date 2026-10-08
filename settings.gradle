@@ -1,0 +1,2 @@
+rootProject.name = 'runelite-hitch-profiler'
+gradle.startParameter.projectCacheDir = new File(System.getProperty('java.io.tmpdir'), 'runelite-hitch-profiler-gradle-cache')
